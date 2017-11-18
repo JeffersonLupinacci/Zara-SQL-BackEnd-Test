@@ -101,7 +101,7 @@ public class TestSqlDao {
 	 * Obtiene los datos del usuario y pedido con el pedido de mayor importe para la tienda dada
 	 * 
 	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad
-	 * Java utiliza "pass-by-value", los datos deben ser devueltos por un objeto "cómo no devuelve los datos"
+	 * Java utiliza "pass-by-value", los datos deben ser devueltos por un objeto "cómo está no devuelve los datos"
 	 * traer el último registro de la base de datos, sin procesamiento para eso
 	 * 
 	 * @throws Exception
