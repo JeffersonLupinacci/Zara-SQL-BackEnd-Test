@@ -101,7 +101,7 @@ public class TestSqlDao {
 	 * Obtiene los datos del usuario y pedido con el pedido de mayor importe para la tienda dada
 	 * 
 	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad
-	 * Java utiliza "pass-by-value", los datos deben ser devueltos por un objeto
+	 * Java utiliza "pass-by-value", los datos deben ser devueltos por un objeto "cómo no devuelve los datos"
 	 * traer el último registro de la base de datos, sin procesamiento para eso
 	 * 
 	 * @throws Exception
@@ -130,7 +130,7 @@ public class TestSqlDao {
 					name = rs.getString("NOMBRE");
 					address = rs.getString("DIRECCION");
 					
-					System.out.println(address +" >>> Aquí existe");
+					System.out.println(address +" >>> Aquí existe, pero no devuelve nada");
 				}
 
 			if (null != rs)
@@ -148,6 +148,7 @@ public class TestSqlDao {
 	}
 
 	public Connection getConnection() {
+		// para probar siempre devuelve una nueva conexión
 		try {
 			return DriverManager.getConnection("jdbc:mysql://localhost/contas?useSSL=false&serverTimezone=UTC", "root",
 					"root");
