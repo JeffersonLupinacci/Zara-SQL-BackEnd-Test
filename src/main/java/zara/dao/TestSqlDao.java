@@ -63,7 +63,10 @@ public class TestSqlDao {
 
 		// AutoCloseable: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
 		Connection conn = getConnection();
+		
+		//Disabling Auto-Commit Mode https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html#disable_auto_commit
 		conn.setAutoCommit(false);
+		
 		try (PreparedStatement stmt = conn.prepareStatement(query)) {
 			stmt.executeUpdate();		
 			conn.commit();
