@@ -8,18 +8,15 @@ import java.sql.SQLException;
 import java.util.Hashtable;
 
 /**
- * Mejorar cada uno de los métodos a nivel SQL y código cuando sea necesario 
- * Razonar cada una de las mejoras que se han implementado 
- * No es necesario que el código implementado funcione
+ * Mejorar cada uno de los métodos a nivel SQL y código cuando sea necesario Razonar cada una de las mejoras que se han implementado No es necesario que el código implementado funcione
  */
 public class TestSqlDao {
 
 	/**
 	 * Obtiene el ID del último pedido para cada usuario
 	 * 
-	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad 
-	 * modificado el procesamiento para dentro de la base de datos 
-	 * cerrando resultset y statement
+	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad (firma del método) modificado el procesamiento para dentro de la base de datos cerrando resultset y
+	 * statement
 	 * 
 	 * @throws Exception
 	 * 
@@ -31,6 +28,7 @@ public class TestSqlDao {
 
 		Hashtable<Long, Long> maxOrderUser = new Hashtable<Long, Long>();
 
+		// AutoCloseable: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
 		try (Connection conn = getConnection();
 				PreparedStatement stmt = conn.prepareStatement(query);
 				ResultSet rs = stmt.executeQuery()) {
@@ -38,16 +36,6 @@ public class TestSqlDao {
 			if (null != rs)
 				while (rs.next())
 					maxOrderUser.put(rs.getLong("ID_USUARIO"), rs.getLong("ID_PEDIDO"));
-
-			if (null != rs)
-				rs.close();
-			if (null != stmt)
-				stmt.close();
-			
-			// como la conexión no es singleton cierre aquí
-			if (null != conn) 
-				conn.close();
-
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -59,9 +47,8 @@ public class TestSqlDao {
 	/**
 	 * Copia todos los pedidos de un usuario a otro
 	 * 
-	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad 
-	 * dejando el flujo de inserción para la base de datos (INSERT OR UPDATE QUERY) 
-	 * cerrando statement
+	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad (firma del método) dejando el flujo de inserción para la base de datos (INSERT WITH SELECT)
+	 * https://dev.mysql.com/doc/refman/5.7/en/insert-select.htmlhttps://dev.mysql.com/doc/refman/5.7/en/insert-select.html cerrando statement
 	 * 
 	 * @throws Exception
 	 */
@@ -71,6 +58,7 @@ public class TestSqlDao {
 						+ " select FECHA, TOTAL, SUBTOTAL, DIRECCION, %s from PEDIDOS where ID_USUARIO = %s ",
 				idUserDes, idUserOri);
 
+		// AutoCloseable: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
 		Connection conn = getConnection();
 		try (PreparedStatement stmt = conn.prepareStatement(query)) {
 			stmt.executeUpdate();
@@ -78,31 +66,27 @@ public class TestSqlDao {
 			conn.setAutoCommit(false);
 			conn.commit();
 
-			if (null != stmt)
-				stmt.close();
-			
-			// como la conexión no es singleton cierre aquí
-			if (null != conn) 
-				conn.close();
-
 		} catch (Exception e) {
 			if (conn != null)
 				conn.rollback();
-			
+
 			// como la conexión no es singleton cierre aquí
-			if (null != conn) 
+			if (null != conn)
 				conn.close();
 
 			System.out.println(e.getMessage());
+		} finally {
+			// como la conexión no es singleton cierre aquí
+			if (null != conn)
+				conn.close();
 		}
 	}
 
 	/**
 	 * Obtiene los datos del usuario y pedido con el pedido de mayor importe para la tienda dada
 	 * 
-	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad
-	 * Java utiliza "pass-by-value", los datos deben ser devueltos por un objeto "cómo está no devuelve los datos"
-	 * traer el último registro de la base de datos, sin procesamiento para eso
+	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad (firma del método) Java utiliza "pass-by-value", los datos deben ser devueltos por un objeto "cómo está
+	 * no devuelve los datos" traer el último registro de la base de datos, sin procesamiento para eso en JAVA
 	 * 
 	 * @throws Exception
 	 * 
@@ -114,11 +98,12 @@ public class TestSqlDao {
 				+ "from PEDIDOS P inner join USUARIOS U on (U.ID_USUARIO = P.ID_USUARIO) " + "where P.ID_TIENDA = %s "
 				+ "order by P.TOTAL desc limit 1", idTienda);
 
+		// AutoCloseable: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
 		try (Connection conn = getConnection();
 				PreparedStatement stmt = conn.prepareStatement(query);
 				ResultSet rs = stmt.executeQuery()) {
 
-			//variable para compilar			
+			// variable para compilar
 			@SuppressWarnings("unused")
 			long total = 0;
 
@@ -129,19 +114,10 @@ public class TestSqlDao {
 					orderId = rs.getInt("ID_PEDIDO");
 					name = rs.getString("NOMBRE");
 					address = rs.getString("DIRECCION");
-					
-					System.out.println(address +" >>> Aquí existe, pero no devuelve nada");
+
+					System.out.println(address + " >>> Aquí existe, pero no devuelve nada");
 				}
 
-			if (null != rs)
-				rs.close();
-			if (null != stmt)
-				stmt.close();
-			
-			// como la conexión no es singleton cierre aquí
-			if (null != conn) 
-				conn.close();
-			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
