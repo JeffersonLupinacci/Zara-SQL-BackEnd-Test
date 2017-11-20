@@ -63,12 +63,10 @@ public class TestSqlDao {
 
 		// AutoCloseable: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
 		Connection conn = getConnection();
+		conn.setAutoCommit(false);
 		try (PreparedStatement stmt = conn.prepareStatement(query)) {
-			stmt.executeUpdate();
-
-			conn.setAutoCommit(false);
+			stmt.executeUpdate();		
 			conn.commit();
-
 		} catch (Exception e) {
 			if (conn != null)
 				conn.rollback();
