@@ -15,8 +15,9 @@ public class TestSqlDao {
 	/**
 	 * Obtiene el ID del último pedido para cada usuario
 	 * 
-	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad (firma del método) modificado el procesamiento para dentro de la base de datos cerrando resultset y
-	 * statement
+	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad (firma del método) 
+	 * modificado el procesamiento para dentro de la base de datos 
+	 * cerrando resultset y statement
 	 * 
 	 * @throws Exception
 	 * 
@@ -47,8 +48,10 @@ public class TestSqlDao {
 	/**
 	 * Copia todos los pedidos de un usuario a otro
 	 * 
-	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad (firma del método) dejando el flujo de inserción para la base de datos (INSERT WITH SELECT)
-	 * https://dev.mysql.com/doc/refman/5.7/en/insert-select.htmlhttps://dev.mysql.com/doc/refman/5.7/en/insert-select.html cerrando statement
+	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad (firma del método) 
+	 * dejando el flujo de inserción para la base de datos (INSERT WITH SELECT)
+	 * https://dev.mysql.com/doc/refman/5.7/en/insert-select.html 
+	 * cerrando statement
 	 * 
 	 * @throws Exception
 	 */
@@ -69,11 +72,6 @@ public class TestSqlDao {
 		} catch (Exception e) {
 			if (conn != null)
 				conn.rollback();
-
-			// como la conexión no es singleton cierre aquí
-			if (null != conn)
-				conn.close();
-
 			System.out.println(e.getMessage());
 		} finally {
 			// como la conexión no es singleton cierre aquí
@@ -85,8 +83,9 @@ public class TestSqlDao {
 	/**
 	 * Obtiene los datos del usuario y pedido con el pedido de mayor importe para la tienda dada
 	 * 
-	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad (firma del método) Java utiliza "pass-by-value", los datos deben ser devueltos por un objeto "cómo está
-	 * no devuelve los datos" traer el último registro de la base de datos, sin procesamiento para eso en JAVA
+	 * no se considera buena práctica la Exception class, mantenido para no romper la compatibilidad (firma del método) 
+	 * Java utiliza "pass-by-value", los datos deben ser devueltos por un objeto "cómo está no devuelve los datos" 
+	 * traer el último registro de la base de datos, sin procesamiento para eso en JAVA
 	 * 
 	 * @throws Exception
 	 * 
